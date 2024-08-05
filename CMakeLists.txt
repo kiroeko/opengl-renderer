@@ -70,9 +70,6 @@ add_executable(${PROJECT_NAME})
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/third-party/cmake-module)
 find_package(GLFW REQUIRED)
 
-message(STATUS "===============")
-message(STATUS ${GLFW_DEFINITIONS})
-
 # Set definitions
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     ${GLFW_DEFINITIONS})
