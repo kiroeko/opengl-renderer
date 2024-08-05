@@ -69,10 +69,12 @@ add_executable(${PROJECT_NAME})
 # Find related libraries
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/third-party/cmake-module)
 find_package(OpenGL REQUIRED)
+find_package(Glad REQUIRED)
 find_package(GLFW REQUIRED)
 
 # Set definitions
 target_compile_definitions(${PROJECT_NAME} PRIVATE
+    ${Glad_DEFINITIONS}
     ${GLFW_DEFINITIONS})
 
 # Set complie options
@@ -83,6 +85,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 # Set properties
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
+    LINK_FLAGS "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
     VS_DEBUGGER_WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/output/${CMAKE_SYSTEM_NAME_STR}/${CMAKE_GENERATOR_PLATFORM_STR}/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>/bin
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
     CXX_VISIBILITY_PRESET hidden
@@ -108,6 +111,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 # Set linked libs
 target_link_libraries(${PROJECT_NAME} PRIVATE
     OpenGL::GL
+    Glad
     GLFW)
 
 # Make build with runtime dependencies
