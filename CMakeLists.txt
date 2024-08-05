@@ -85,7 +85,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 # Set properties
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
-    LINK_FLAGS "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
+    LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
     VS_DEBUGGER_WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/output/${CMAKE_SYSTEM_NAME_STR}/${CMAKE_GENERATOR_PLATFORM_STR}/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>/bin
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
     CXX_VISIBILITY_PRESET hidden
