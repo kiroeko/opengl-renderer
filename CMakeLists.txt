@@ -68,8 +68,8 @@ add_executable(${PROJECT_NAME})
 
 # Find related libraries
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/third-party/cmake-module)
-find_package(GLFW REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(GLFW REQUIRED)
 
 # Set definitions
 target_compile_definitions(${PROJECT_NAME} PRIVATE
