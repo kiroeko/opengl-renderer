@@ -20,7 +20,9 @@ if (NOT TARGET GLFW)
         # Set include directories
         set(INCLUDE_DIRS ${SOURCE_DIR}/include)
         # Set definitions
-        set(GLFW_DEFINITIONS "GLFW_DLL"
+        set(GLFW_DEFINITIONS
+            "GLFW_DLL"
+            "GLFW_INCLUDE_NONE"
             CACHE INTERNAL "GLFW Definitions")
 
         find_library(GLFW_LIB
