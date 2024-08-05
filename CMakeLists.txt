@@ -69,6 +69,7 @@ add_executable(${PROJECT_NAME})
 # Find related libraries
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/third-party/cmake-module)
 find_package(GLFW REQUIRED)
+find_package(OpenGL REQUIRED)
 
 # Set definitions
 target_compile_definitions(${PROJECT_NAME} PRIVATE
@@ -106,6 +107,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 # Set linked libs
 target_link_libraries(${PROJECT_NAME} PRIVATE
+    OpenGL::GL
     GLFW)
 
 # Make build with runtime dependencies
