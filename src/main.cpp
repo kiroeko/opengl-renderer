@@ -4,11 +4,7 @@
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
-
-// settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+void process_input(GLFWwindow* window);
 
 int main()
 {
@@ -17,7 +13,9 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "OpenGl Test", NULL, NULL);
+    constexpr int width = 800;
+    constexpr int height = 600;
+    GLFWwindow* window = glfwCreateWindow(width, height, "OpenGl Test", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -35,7 +33,9 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
-        processInput(window);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -43,12 +43,6 @@ int main()
 
     glfwTerminate();
     return 0;
-}
-
-void processInput(GLFWwindow* window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
