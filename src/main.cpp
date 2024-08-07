@@ -38,7 +38,7 @@ int main()
         "layout (location = 0) in vec3 aPos;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = vec4(aPos.xyz, 1.0);\n"
+        "   gl_Position = vec4(aPos, 1.0);\n"
         "}\0";
     GLuint vertexShader = 0;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
