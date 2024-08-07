@@ -36,8 +36,11 @@ int main()
     const char* vertexShaderSource =
         "#version 460 core\n"
         "layout (location = 0) in vec3 aPos;\n"
+        "layout (location = 1) in vec3 aColor;\n"
+        "out vec3 fColor;\n"
         "void main()\n"
         "{\n"
+        "   fColor = aColor;\n"
         "   gl_Position = vec4(aPos, 1.0);\n"
         "}\0";
     GLuint vertexShader = 0;
@@ -47,11 +50,12 @@ int main()
 
     const char* fragmentShaderSource =
         "#version 460 core\n"
-        "uniform vec4 uColor;\n"
+        "in vec3 fColor;\n"
         "out vec4 outColor;\n"
+        "uniform float uColorAlpha;\n"
         "void main()\n"
         "{\n"
-        "   outColor = uColor;\n"
+        "   outColor = vec4(fColor, uColorAlpha);\n"
         "}\0";
     GLuint fragmentShader = 0;
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -67,63 +71,41 @@ int main()
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    GLint uColorLoc = glGetUniformLocation(shaderProgram, "uColor");
+    GLint uColorAlphaLoc = glGetUniformLocation(shaderProgram, "uColorAlpha");
 
     // data
-    GLfloat vertices1[] = {
-        -1.0f, 1.0f, 0.0f,
-        -1.0f, 0.8f, 0.0f,
-        -0.8f, 0.8f, 0.0f,
-        -0.8f, 1.0f, 0.0f,
-    };
-    GLfloat vertices2[] = {
-        -0.9f, 0.9f, 0.0f,
-        -0.9f, 0.7f, 0.0f,
-        -0.7f, 0.7f, 0.0f,
-        -0.7f, 0.9f, 0.0f,
+    GLfloat vertices[] = {
+        // Position          // Color
+         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // right bottom
+        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // left bottom
+         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // middle top
     };
     GLuint indices[] = {
-        0, 1, 3,
-        1, 2, 3
+        0, 1, 2
     };
 
     // VBOs
-    GLuint VBO1 = 0;
-    glGenBuffers(1, &VBO1);
-    GLuint VBO2 = 0;
-    glGenBuffers(1, &VBO2);
+    GLuint VBO = 0;
+    glGenBuffers(1, &VBO);
     // IBOs
     GLuint IBO;
     glGenBuffers(1, &IBO);
     // VAOs
-    GLuint VAO1;
-    glGenVertexArrays(1, &VAO1);
-    GLuint VAO2;
-    glGenVertexArrays(1, &VAO2);
-
+    GLuint VAO;
+    glGenVertexArrays(1, &VAO);
 
     // VAO1 Binding
-    glBindBuffer(GL_ARRAY_BUFFER, VBO1);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_DYNAMIC_DRAW);
-    glBindVertexArray(VAO1);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+    glBindVertexArray(VAO);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
-    // VAO2 Binding
-    glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
-
-    glBindVertexArray(VAO2);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     // Render loop
     while (!glfwWindowShouldClose(window))
@@ -132,13 +114,8 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
-        glUniform4f(uColorLoc, 0.0f, 0.0f, 1.0f, 1.0f);
-        glBindVertexArray(VAO1);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-        glUseProgram(shaderProgram);
-        glUniform4f(uColorLoc, 1.0f, 0.0f, 0.0f, 1.0f);
-        glBindVertexArray(VAO2);
+        glUniform1f(uColorAlphaLoc, 0.0f);
+        glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
