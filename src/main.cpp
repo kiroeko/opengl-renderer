@@ -35,11 +35,10 @@ int main()
     // Shader
     const char* vertexShaderSource =
         "#version 460 core\n"
-        "layout (location = 0) in vec2 aPos;\n"
-        "uniform float uZ;\n"
+        "layout (location = 0) in vec3 aPos;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = vec4(aPos.xy, uZ, 1.0);\n"
+        "   gl_Position = vec4(aPos.xyz, 1.0);\n"
         "}\0";
     GLuint vertexShader = 0;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -68,21 +67,20 @@ int main()
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    GLint uZLoc = glGetUniformLocation(shaderProgram, "uZ");
     GLint uColorLoc = glGetUniformLocation(shaderProgram, "uColor");
 
     // data
     GLfloat vertices1[] = {
-        -1.0f, 1.0f,
-        -1.0f, 0.8f,
-        -0.8f, 0.8f,
-        -0.8f, 1.0f,
+        -1.0f, 1.0f, 0.0f,
+        -1.0f, 0.8f, 0.0f,
+        -0.8f, 0.8f, 0.0f,
+        -0.8f, 1.0f, 0.0f,
     };
     GLfloat vertices2[] = {
-        -0.9f, 0.9f,
-        -0.9f, 0.7f,
-        -0.7f, 0.7f,
-        -0.7f, 0.9f,
+        -0.9f, 0.9f, 0.0f,
+        -0.9f, 0.7f, 0.0f,
+        -0.7f, 0.7f, 0.0f,
+        -0.7f, 0.9f, 0.0f,
     };
     GLuint indices[] = {
         0, 1, 3,
@@ -113,7 +111,7 @@ int main()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // VAO2 Binding
@@ -125,7 +123,7 @@ int main()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
 
@@ -136,13 +134,11 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
-        glUniform1f(uZLoc, -0.3f);
         glUniform4f(uColorLoc, 0.0f, 0.0f, 1.0f, 1.0f);
         glBindVertexArray(VAO1);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glUseProgram(shaderProgram);
-        glUniform1f(uZLoc, 0.3f);
         glUniform4f(uColorLoc, 1.0f, 0.0f, 0.0f, 1.0f);
         glBindVertexArray(VAO2);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
