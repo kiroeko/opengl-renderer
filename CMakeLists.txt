@@ -63,6 +63,11 @@ make_directory(${OUTPUT_BIN_DIR_DEBUG})
 set(OUTPUT_BIN_DIR_RELEASE ${PROJECT_SOURCE_DIR}/output/${CMAKE_SYSTEM_NAME_STR}/${CMAKE_GENERATOR_PLATFORM_STR}/release/bin)
 make_directory(${OUTPUT_BIN_DIR_RELEASE})
 
+# Set runtime resources
+set(${PROJECT_NAME}_RES_DIRS "")
+list(APPEND ${PROJECT_NAME}_RES_DIRS
+    ${PROJECT_SOURCE_DIR}/res)
+
 # Create executable
 add_executable(${PROJECT_NAME})
 
@@ -114,8 +119,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Glad
     GLFW)
 
-# Make build with runtime dependencies
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E
         copy_if_different $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    COMMAND ${CMAKE_COMMAND} -E
+        copy_directory_if_different ${${PROJECT_NAME}_RES_DIRS} $<TARGET_FILE_DIR:${PROJECT_NAME}>/res
 )
