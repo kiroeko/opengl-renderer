@@ -68,6 +68,9 @@ set(${PROJECT_NAME}_RES_DIRS "")
 list(APPEND ${PROJECT_NAME}_RES_DIRS
     ${PROJECT_SOURCE_DIR}/res)
 
+# Set vs startup project
+set_property(DIRECTORY ${PROJECT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+
 # Create executable
 add_executable(${PROJECT_NAME})
 
