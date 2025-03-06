@@ -24,7 +24,7 @@ namespace OGLRenderer::Graphics
                 return;
 
             GLuint fs = 0;
-            if (!CreateAndComplieShader(vertexShaderFilePath, GL_FRAGMENT_SHADER, fs))
+            if (!CreateAndComplieShader(fragmentShaderFilePath, GL_FRAGMENT_SHADER, fs))
                 return;
 
             shaderProgram = glCreateProgram();
