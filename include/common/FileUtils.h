@@ -1,7 +1,7 @@
 #ifndef __FILEUTILS_H__
 #define __FILEUTILS_H__
 
-#include "Singleton.h"
+#include "common/Singleton.h"
 
 #include <fstream>
 #include <string>
