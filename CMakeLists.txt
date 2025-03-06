@@ -79,6 +79,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/third-party/cmake-module)
 find_package(OpenGL REQUIRED)
 find_package(Glad REQUIRED)
 find_package(GLFW REQUIRED)
+find_package(GLM REQUIRED)
 
 # Set definitions
 target_compile_definitions(${PROJECT_NAME} PRIVATE
@@ -104,6 +105,7 @@ set_target_properties(${PROJECT_NAME}
 # Collect all source files
 file(GLOB_RECURSE SRC_LIST
     ${PROJECT_SOURCE_DIR}/include/*.h
+    ${PROJECT_SOURCE_DIR}/include/*.hpp
     ${PROJECT_SOURCE_DIR}/src/*.c
     ${PROJECT_SOURCE_DIR}/src/*.cpp)
 source_group_by_dir(SRC_LIST)
@@ -120,7 +122,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME} PRIVATE
     OpenGL::GL
     Glad
-    GLFW)
+    GLFW
+    GLM)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E
