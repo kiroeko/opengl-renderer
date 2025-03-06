@@ -3,6 +3,9 @@
 
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "common/FileUtils.h"
 
@@ -18,6 +21,8 @@ namespace OGLRenderer::Graphics
     class Shader
     {
     public:
+        Shader() = default;
+
         Shader(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath)
         {
             GLuint vs = 0;
@@ -51,12 +56,23 @@ namespace OGLRenderer::Graphics
 
         ~Shader()
         {
-            glDeleteProgram(shaderProgram);
+            // 等添加右值和移动语义之后再RALL
+            //if (shaderProgram != 0)
+            //    glDeleteProgram(shaderProgram);
         }
 
         void Use()
         {
             glUseProgram(shaderProgram);
+        }
+
+        bool SetUniformWithMatrixFloat(const std::string& uniformName, const glm::mat4& mat)
+        {
+            GLint loc = GetUniformLocation(uniformName);
+            if (loc == -1)
+                return false;
+
+            glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(mat));
         }
 
         bool SetUniformWithFloat(const std::string& uniformName, const std::vector<float>& floats)
@@ -156,10 +172,11 @@ namespace OGLRenderer::Graphics
                 return it->second;
 
             GLint loc = glGetUniformLocation(shaderProgram, uniformName.c_str());
-            if (loc != -1)
-            {
+            if (loc == -1)
+                std::cerr << "Shader uniform: \"" << uniformName << "\" not found." << std::endl;
+            else
                 uniformLocations[uniformName] = loc;
-            }
+
             return loc;
         }
 
