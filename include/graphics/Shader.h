@@ -56,7 +56,7 @@ namespace OGLRenderer::Graphics
 
         ~Shader()
         {
-            // 等添加右值和移动语义之后再RALL
+            // 等添加右值和移动语义之后再 RAII，不手动释放也会随着 glfwTerminate 释放，目前不会造成内存泄露。
             //if (shaderProgram != 0)
             //    glDeleteProgram(shaderProgram);
         }

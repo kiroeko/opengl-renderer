@@ -194,7 +194,7 @@ namespace OGLRenderer::App
             s = OGLRenderer::Graphics::Shader("res/shaders/base.vs", "res/shaders/base.fs");
             s.Use();
             // 固定的矩阵参数
-            s.SetUniformWithMatrixFloat("viewm", view);
+            s.SetUniformWithMatrixFloat("uView", view);
 
             // 设置物体的 shader 属性参数，这里是 RGBA 控制其颜色，默认给个蓝色
             for (int i = 0; i < 4; ++i)
@@ -222,12 +222,12 @@ namespace OGLRenderer::App
         //     实际上可以使用复杂的场景物体预剔除、LOD以及合批的策略，优化这一步的性能，但其实对于几个场景物体，也没啥优化空间。
         void renderScene()
         {
-            s.SetUniformWithMatrixFloat("projectionm", projection);
+            s.SetUniformWithMatrixFloat("uProjection", projection);
             // 画 4 个屏幕物体
             for (int i = 0; i < 4; ++i)
             {
-                s.SetUniformWithMatrixFloat("modelm", models[i]);
-                s.SetUniformWithFloat("colorm", meshUniformParams[i].r, meshUniformParams[i].g, meshUniformParams[i].b, meshUniformParams[i].a);
+                s.SetUniformWithMatrixFloat("uModel", models[i]);
+                s.SetUniformWithFloat("uColor", meshUniformParams[i].r, meshUniformParams[i].g, meshUniformParams[i].b, meshUniformParams[i].a);
                 glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_INT, 0);
             }
         }
