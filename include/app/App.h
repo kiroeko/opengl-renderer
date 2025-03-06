@@ -62,6 +62,11 @@ namespace OGLRenderer::App
             windowWidth = initWidth;
             windowHeight = initHeight;
             glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+
+            // 启用鼠标
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            glfwSetCursorPosCallback(window, mouseCallback);
+
             return true;
         }
 
@@ -111,6 +116,7 @@ namespace OGLRenderer::App
             // ESC 退出
             if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
                 glfwSetWindowShouldClose(window, true);
+
         }
 
         // 这里我们简单手动填写一下所需的 mesh 和它们有关的变换矩阵的数据，
@@ -161,7 +167,7 @@ namespace OGLRenderer::App
             elementCount = std::size(indices);
 
             // 设置4个物体的 model 矩阵
-            // 第一关元素，原地不动
+            // 第一个元素，原地不动
             glm::mat4 m1 = glm::identity<glm::mat4>();
             models.push_back(m1);
 
@@ -268,6 +274,67 @@ namespace OGLRenderer::App
             App::GetInstance().windowWidth = width;
             App::GetInstance().windowHeight = height;
             App::GetInstance().UpdateProjection();
+        }
+
+        static void mouseCallback(GLFWwindow* window, double xposIn, double yposIn)
+        {
+            float xpos = static_cast<float>(xposIn);
+            float ypos = static_cast<float>(yposIn);
+            float xoffset = App::GetInstance().windowWidth / 2 - xpos;
+            float yoffset = App::GetInstance().windowHeight / 2 - ypos;
+
+            if (App::GetInstance().meshUniformParams.size() != 4)
+                return;
+
+            if (xoffset == 0 && yoffset == 0)
+            {
+                return;
+            }
+
+            int quadrant = getQuadrant(xoffset, yoffset);
+            if (quadrant == -1)
+            {
+                for (int i = 0; i < App::GetInstance().meshUniformParams.size(); ++i)
+                {
+                    App::GetInstance().meshUniformParams[i] = glm::vec4(0.f, 0.f, 1.f, 1.f);
+                }
+                return;
+            }
+
+            for (int i = 0; i < App::GetInstance().meshUniformParams.size(); ++i)
+            {
+                if (i + 1 == quadrant)
+                {
+                    App::GetInstance().meshUniformParams[i] = glm::vec4(0.f, 1.f, 0.f, 1.f);
+                }
+                else
+                {
+                    App::GetInstance().meshUniformParams[i] = glm::vec4(0.f, 0.f, 1.f, 1.f);
+                }
+            }
+        }
+
+        static int getQuadrant(float x, float y)
+        {
+            float radians = glm::atan(y, x);
+
+            // 将角度转换为[0, 2π]范围
+            float degrees = glm::degrees(radians);
+
+            // 判断角度所在的区间
+            if (degrees > 0.f && degrees < 90.f) {
+                return 1; // 0-90度
+            }
+            else if (degrees > 90.f && degrees < 180.f) {
+                return 2; // 90-180度
+            }
+            else if (degrees > -180.f && degrees < -90.f) {
+                return 3; // 180-270度
+            }
+            else if (degrees > -90.f && degrees < 0.f) {
+                return 4; // 270-360度
+            }
+            return -1;
         }
 
         // mesh 数据源 和 渲染用的矩阵数据，一般由场景管理器管理

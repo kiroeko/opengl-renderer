@@ -73,6 +73,7 @@ namespace OGLRenderer::Graphics
                 return false;
 
             glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(mat));
+            return true;
         }
 
         bool SetUniformWithFloat(const std::string& uniformName, const std::vector<float>& floats)
